@@ -6,7 +6,7 @@ const usersController = {
     usersService.get(userId, (error, users) => {
       if (error) next(error);
       if (users) {
-        res.render('users', { users: users });
+        res.render('users/users', { users: users });
       }
     })
 
@@ -16,7 +16,7 @@ const usersController = {
     usersService.delete(userId, (error, result) => {
       if (error) next(error);
       if (users) {
-        res.render('users', { users: users });
+        res.render('users/users', { users: users });
       }
     })
   }

@@ -16,7 +16,8 @@ const usersDao = {
       if (error) return callback(error, undefined);
       if (results) return callback(undefined, results);
     });
-  }
+  },
+  delete: () => {},
 };
 
 module.exports = usersDao;
