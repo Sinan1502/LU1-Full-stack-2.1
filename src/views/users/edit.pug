@@ -1,0 +1,9 @@
+extend ../layout
+
+block content
+    form(method='POST' action='/users/' + users.customer_id + '/edit')
+    div.mb-3
+        label(for="exampleInputEmail1" class="form-label") Email address
+        input(type="email" class="form-control" value = users.email id="exampleInputEmail1" aria-describedby="emailHelp")
+        div(id="emailHelp" class="form-text") We'll never share your email with anyone else.
+    button(type="submit" class="btn btn-primary") Submit
