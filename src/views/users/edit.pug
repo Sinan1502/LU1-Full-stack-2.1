@@ -2,8 +2,48 @@ extend ../layout
 
 block content
     form(method='POST' action='/users/' + users.customer_id + '/edit')
-    div.mb-3
-        label(for="exampleInputEmail1" class="form-label") Email address
-        input(type="email" class="form-control" value = users.email id="exampleInputEmail1" aria-describedby="emailHelp")
-        div(id="emailHelp" class="form-text") We'll never share your email with anyone else.
-    button(type="submit" class="btn btn-primary") Submit
+        div.mb-3
+            label(for="firstName" class="form-label") First Name
+            input(
+                type="text" 
+                name = 'firstName' 
+                class="form-control" 
+                value=users.first_name 
+                id="firstName" 
+                aria-describedby="emailHelp" 
+                required
+            )
+            label(for="lastName" class="form-label") Last Name
+            input(
+                type="text" 
+                name = 'lastName' 
+                class="form-control" 
+                value=users.last_name
+                id="lastName" 
+                aria-describedby="emailHelp" 
+                required
+            )
+            label(for="active" class="form-label") Active
+            input(
+                type="active" 
+                name = 'active' 
+                class="form-control" 
+                value=users.active 
+                id="active" 
+                aria-describedby="emailHelp" 
+                required
+                )
+            label(for="exampleInputEmail1" class="form-label") Email address
+            input(
+                type="email" 
+                name = 'email' 
+                class="form-control" 
+                value=users.email 
+                id="exampleInputEmail1" 
+                aria-describedby="emailHelp" 
+                required
+                )
+            div(id="emailHelp" class="form-text") We'll never share your email with anyone else.
+        div(class='row')
+            button.btn.btn-primary.me-2(type='submit') Submit
+            button.btn.btn-warning.ml-2(type='button' onclick='window.location.href="/users/' + users.customer_id + '/details"') Cancel

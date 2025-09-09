@@ -2,6 +2,13 @@ const usersService = require('../service/users.service');
 const logger = require('../util/logger');
 
 const usersController = {
+
+  validateL (req, res, next) {
+    
+    next()
+  },
+
+
   get: (req, res, next) => {
     let userId = req.params.userId;
     usersService.get(userId, (error, users) => {
@@ -16,6 +23,8 @@ const usersController = {
 
   update: (req, res, next) => {
     let userId = req.params.userId;
+    logger.debug(req.body);
+    let { email, firstName, lastName, active } = req.body;
     req.method == 'GET'
       ? usersService.get(userId, (error, users) => {
         if (error) next(error);
@@ -23,8 +32,12 @@ const usersController = {
           res.render('users/edit', { users: users[0] });
         }
       })
-      //: usersService.update();
-      : logger.debug(req.body);
+      : usersService.update(email, userId, firstName, lastName, active, (error, result) => {
+      //: logger.debug(req.body);
+        if (error) next(error);
+        if (result) res.redirect(301,'/users/${userId}/details');
+        
+      });
   },
   delete: (req, res, next) => {
     let userId = req.params.userId;

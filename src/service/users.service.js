@@ -12,6 +12,13 @@ const usersService = {
     });
   },
 
+  update: (email, userId, firstName, lastName, active, callback) => {
+    usersDao.update(email, userId, firstName, lastName, active, (error, result) => {
+      if (error) return callback(error, undefined);
+      if (result) return callback(undefined, result);
+    });
+  },
+
   delete: (userId, callback) => {
     usersDao.get(userId, (error, result) => {
       let users = result.filter(users => user.id == userId)[0];

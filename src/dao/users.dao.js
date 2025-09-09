@@ -17,6 +17,18 @@ const usersDao = {
       if (results) return callback(undefined, results);
     });
   },
+
+  update: (email, userId, firstName, lastName, active, callback) => {
+    database.query(
+      'UPDATE ?? SET ?? = ? WHERE ?? = ?',
+      ['customer', 'email', email, 'first_name', firstName, 'last_name', lastName, 'active', active, 'customer_id', userId],
+      (error, results) => {
+        if (error) return callback(error, undefined);
+        if (results) return callback(undefined, results);
+      }
+    )
+  },
+
   delete: () => {},
 };
 
