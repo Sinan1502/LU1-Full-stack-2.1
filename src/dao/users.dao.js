@@ -20,7 +20,7 @@ const usersDao = {
 
   update: (email, userId, firstName, lastName, active, callback) => {
     database.query(
-      'UPDATE ?? SET ?? = ? WHERE ?? = ?',
+      'UPDATE ?? SET ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?',
       ['customer', 'email', email, 'first_name', firstName, 'last_name', lastName, 'active', active, 'customer_id', userId],
       (error, results) => {
         if (error) return callback(error, undefined);

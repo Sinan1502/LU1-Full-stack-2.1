@@ -3,7 +3,7 @@ const logger = require('../util/logger');
 
 const usersController = {
 
-  validateL (req, res, next) {
+  validate (req, res, next) {
     
     next()
   },
@@ -16,7 +16,7 @@ const usersController = {
       if (users) {
         userId == undefined
         ? res.render('users/table', { users: users })
-        : res.render('users/details', { users: users[0] });
+        : res.render('users/details', { users: users[0]});
       }
     });
   },
@@ -35,7 +35,7 @@ const usersController = {
       : usersService.update(email, userId, firstName, lastName, active, (error, result) => {
       //: logger.debug(req.body);
         if (error) next(error);
-        if (result) res.redirect(301,'/users/${userId}/details');
+        if (result) res.redirect(301,`/users/${userId}/details`);
         
       });
   },
