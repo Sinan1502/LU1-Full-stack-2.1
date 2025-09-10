@@ -36,8 +36,8 @@ validate: (email, firstName, lastName, active, callback) => {
   },
 
   delete: (userId, callback) => {
-    usersDao.get(userId, (error, result) => {
-      let users = result.filter(users => user.id == userId)[0];
+    usersDao.delete(userId, (error, users) => {
+      if (error) return callback(error, undefined);
       return callback(undefined, users);
     });
   }

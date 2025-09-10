@@ -1,5 +1,5 @@
-const data = require('../db/example.data');
 const database = require('../db/connection');
+const logger = require('../util/logger');
 
 const usersDao = {
   get: (userId, callback) => {

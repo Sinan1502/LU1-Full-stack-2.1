@@ -47,11 +47,13 @@ const usersController = {
   },
   delete: (req, res, next) => {
     let userId = req.params.userId;
-    usersService.delete(userId, (error, result) => {
+    usersService.delete(userId, (error, users) => {
       if (error) next(error);
-      if (users) {
-        res.render('users/users', { users: users });
-      }
+      if (users) res.json({
+        status: 200,
+        message: `User deleted`,
+        data: [],
+      })
     });
   },
 };
