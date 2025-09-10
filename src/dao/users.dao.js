@@ -29,7 +29,16 @@ const usersDao = {
     )
   },
 
-  delete: () => {},
+  delete: (userId, callback) => {
+    database.query(
+      'DELETE FROM ?? WHERE ?? = ?',
+      ['customer', 'customer_id', userId],
+      (error, results) => {
+        if (error) return callback(error, undefined);
+        if (results) return callback(undefined, results);
+      }
+    )
+  },
 };
 
 module.exports = usersDao;

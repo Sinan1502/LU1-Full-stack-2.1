@@ -7,13 +7,17 @@ block content
         th.col First Name
         th.col Last Name
         th.col Email
+        th.col Active
     tbody
       each user in users
           tr
             td #{user.first_name}
             td #{user.last_name}
             td #{user.email}
+            td #{user.active}
             td 
               a.btn.btn-primary(href='/users/' + user.customer_id + '/details') Details
+            td
+              a.btn.btn-warning() Delete
   
    

@@ -4,8 +4,14 @@ const logger = require('../util/logger');
 const usersController = {
 
   validate (req, res, next) {
-    
-    next()
+    let userId = req.params.userId;
+    logger.debug(req.body);
+    let { email, firstName, lastName, active } = req.body;
+    active = parseInt(active);
+    usersService.validate(email, firstName, lastName, active, (error) => {
+      if (error) next (error);
+      next()
+    });
   },
 
 

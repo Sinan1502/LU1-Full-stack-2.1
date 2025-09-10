@@ -10,7 +10,6 @@ block content
                 class="form-control" 
                 value=users.first_name 
                 id="firstName" 
-                aria-describedby="emailHelp" 
                 required
             )
             label(for="lastName" class="form-label") Last Name
@@ -20,17 +19,15 @@ block content
                 class="form-control" 
                 value=users.last_name
                 id="lastName" 
-                aria-describedby="emailHelp" 
                 required
             )
             label(for="active" class="form-label") Active
             input(
-                type="active" 
+                type="number" 
                 name = 'active' 
                 class="form-control" 
                 value=users.active 
                 id="active" 
-                aria-describedby="emailHelp" 
                 required
                 )
             label(for="exampleInputEmail1" class="form-label") Email address
