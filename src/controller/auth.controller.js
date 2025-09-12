@@ -18,10 +18,10 @@ const handleLogin = async (req, res) => {
   const match = await bcrypt.compare(pwd, foundUser.password);
   if (match) {
     //create JWT token
-    const accestoken = jwt.sign(
+    const accessToken = jwt.sign(
       { "username": foundUser.username },
       process.env.ACCESS_TOKEN_SECRET,
-      {expiresIn: '30s'}
+      { expiresIn: '15m' }
     );
 
     const refreshToken = jwt.sign(
@@ -36,8 +36,14 @@ const handleLogin = async (req, res) => {
       path.join(__dirname, '..', 'model', 'users.json'),
       JSON.stringify(UsersDB.users)
     );
-    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.json({ accestoken });
+    res.cookie('jwt', refreshToken, {
+      httpOnly: true,
+      sameSite: 'Lax',
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000
+    });
+
+    res.json({ accesstoken });
 
   }
   else {

@@ -2,13 +2,13 @@ extends layout
 
 block content
   .container.mt-5
-    h2 Login
-    form#loginForm
+    h2 Registreren
+    form#registerForm
       .mb-3
         input.form-control(type="text", id="user", placeholder="Gebruikersnaam", required)
       .mb-3
         input.form-control(type="password", id="pwd", placeholder="Wachtwoord", required)
-      button.btn.btn-primary(type="submit") Login
+      button.btn.btn-success(type="submit") Registreer
     p.mt-3
-      | Nog geen account? 
-      a(href="/register") Registreer hier
+      | Heb je al een account?
+      a(href="/") Log hier in
