@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const verifyJWT = require('../middleware/verifyJWT');
 
-router.get('/', verifyJWT, (req, res) => {
+router.get('/', (req, res) => {
   res.render('dashboard', { title: 'Dashboard', user: req.user });
 });
 

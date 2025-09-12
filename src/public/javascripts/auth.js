@@ -22,8 +22,8 @@ if (loginForm) {
 
     if (res.ok) {
       const data = await res.json();
-      localStorage.setItem("accessToken", accessToken);
-      window.location.href = "/users";
+      localStorage.setItem("accessToken", data.accessToken);
+      window.location.href = "/dashboard";
     } else {
       alert("Login mislukt!");
     }
@@ -47,33 +47,45 @@ if (registerForm) {
     if (res.ok) {
       alert("Registratie succesvol! Je kan nu inloggen.");
       window.location.href = "/";
-    } else if(res.status === 409){
+    } else if (res.status === 409) {
       alert("Gebruikersnaam bestaat al!");
     } else {
       alert("Registratie mislukt!");
     }
   });
 }
+// Controleer token
+const token = localStorage.getItem("accessToken");
+if (!token) {
+  window.location.href = "/";
+}
 
-// Dashboard username invullen
 const usernameSpan = document.getElementById("username");
 if (usernameSpan) {
   const token = localStorage.getItem("accessToken");
-  if (token) {
+  if (!token) {
+    window.location.href = "/";
+  } else {
     const payload = JSON.parse(atob(token.split('.')[1]));
     usernameSpan.textContent = payload.username;
   }
 }
-
-// Logout
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
-    await fetch(`${API_BASE}/logout`, {
-      method: "GET",
-      credentials: "include"
-    });
+    try {
+      await fetch(`${API_BASE}/logout`, {
+        method: "GET",
+        credentials: "include"
+      });
+    } catch (err) {
+      console.error("Logout fout:", err);
+    }
     localStorage.removeItem("accessToken");
-    window.location.href = "/";
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 100);
   });
 }
+
+
