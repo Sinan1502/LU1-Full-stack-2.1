@@ -21,15 +21,15 @@ const handleLogin = async (req, res) => {
     const accestoken = jwt.sign(
       { "username": foundUser.username },
       process.env.ACCESS_TOKEN_SECRET,
-      {expriresIn: '30s'}
+      {expiresIn: '30s'}
     );
 
     const refreshToken = jwt.sign(
       { "username": foundUser.username },
       process.env.REFRESH_TOKEN_SECRET,
-      {expriresIn: '1d'}
+      { expiresIn: '1d' }
     );
-    const otherUsers = userDB.users.filter(person => person.username !== foundUser.username);
+    const otherUsers = UsersDB.users.filter(person => person.username !== foundUser.username);
     const currentUser = { ...foundUser, refreshToken };
     UsersDB.setUsers([...otherUsers, currentUser]);
     await fsPromises.writeFile(
