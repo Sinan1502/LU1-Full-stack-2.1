@@ -1,14 +1,15 @@
 extends layout
 
 block content
-  .container.mt-5
-    h2 Registreren
-    form#registerForm
-      .mb-3
-        input.form-control(type="text", id="user", placeholder="Gebruikersnaam", required)
-      .mb-3
-        input.form-control(type="password", id="pwd", placeholder="Wachtwoord", required)
-      button.btn.btn-success(type="submit") Registreer
-    p.mt-3
-      | Heb je al een account?
-      a(href="/") Log hier in
+  .d-flex.justify-content-center.align-items-center.min-vh-100
+    .card.shadow.p-4(style="width: 350px;")
+      h2.text-center.mb-4 Registreren
+      form#registerForm
+        .mb-3
+          input.form-control(type="text", id="user", placeholder="Gebruikersnaam", required)
+        .mb-3
+          input.form-control(type="password", id="pwd", placeholder="Wachtwoord", required)
+        button.btn.btn-success.w-100(type="submit") Registreer
+      p.mt-3.text-center
+        | Heb je al een account?
+        a(href="/") Log hier in

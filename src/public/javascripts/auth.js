@@ -13,7 +13,7 @@ if (loginForm) {
     const user = document.getElementById("user").value;
     const pwd = document.getElementById("pwd").value;
 
-    const res = await fetch(`${API_BASE}/auth`, {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user, pwd }),
@@ -38,7 +38,7 @@ if (registerForm) {
     const user = document.getElementById("user").value;
     const pwd = document.getElementById("pwd").value;
 
-    const res = await fetch(`${API_BASE}/register`, {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user, pwd })
@@ -53,11 +53,6 @@ if (registerForm) {
       alert("Registratie mislukt!");
     }
   });
-}
-// Controleer token
-const token = localStorage.getItem("accessToken");
-if (!token) {
-  window.location.href = "/";
 }
 
 const usernameSpan = document.getElementById("username");
@@ -74,7 +69,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
     try {
-      await fetch(`${API_BASE}/logout`, {
+      await fetch(`${API_BASE}/auth/logout`, {
         method: "GET",
         credentials: "include"
       });

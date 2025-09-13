@@ -1,15 +1,20 @@
 extends ../layout
 
 block content
-  div.card
-    img(src="..." class="card-img-top" alt="...")
-    div.card-body
-      h5.card-title #{users.first_name}
-      p.card.text Some quick example text to build on the card title and make up the bulk of the card’s content.
-    ul(class="list-group list-group-flush")
-      li.list-group-item #{users.last_name}
-      li.list-group-item #{users.active}
-      li.list-group-item #{users.email}
-    div.card.body
-      a(href='/users/' + users.customer_id + '/edit' class="btn btn-primary") Edit
-      a(href="/users/" class="btn btn-warning") Cancel
+  .d-flex.justify-content-center.align-items-center.min-vh-100
+    .card.shadow.p-4(style="width: 400px;")
+      if users.img
+        img.card-img-top(src=users.img, alt=users.first_name + ' foto', style="object-fit: cover; height: 180px;")
+      .card-body
+        h5.card-title.mb-2 #{users.first_name} #{users.last_name}
+        p.card-text.mb-3 Overzicht van klantgegevens.
+      ul.list-group.list-group-flush.mb-3
+        li.list-group-item
+          strong Status: 
+          | #{users.active ? 'Actief' : 'Inactief'}
+        li.list-group-item
+          strong E-mail: 
+          | #{users.email}
+      .d-flex.justify-content-between
+        a.btn.btn-primary(href='/users/' + users.customer_id + '/edit') Bewerken
+        a.btn.btn-warning(href="/users/") Terug

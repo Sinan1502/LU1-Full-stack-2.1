@@ -1,23 +1,28 @@
 extends ../layout
 
 block content
-  table.table.table-striped
-    thead
-      tr
-        th.col First Name
-        th.col Last Name
-        th.col Email
-        th.col Active
-    tbody
-      each user in users
+  .d-flex.justify-content-center.align-items-center.min-vh-100
+    .card.shadow.p-4(style="width: 900px;")
+      h3.text-center.mb-4 Klantenoverzicht
+      table.table.table-striped.align-middle
+        thead
           tr
-            td #{user.first_name}
-            td #{user.last_name}
-            td #{user.email}
-            td #{user.active}
-            td 
-              a.btn.btn-primary(href='/users/' + user.customer_id + '/details') Details
-            td
-              a.btn.btn-danger(onclick=`deleteButtonClicked(${user.customer_id},this)`) Delete
-  
-   
+            th First Name
+            th Last Name
+            th Email
+            th Active
+            th.text-center Details
+            th.text-center Verwijderen
+        tbody
+          each user in users
+            tr
+              td #{user.first_name}
+              td #{user.last_name}
+              td #{user.email}
+              td #{user.active ? 'Actief' : 'Inactief'}
+              td.text-center
+                a.btn.btn-primary.btn-sm(href='/users/' + user.customer_id + '/details') Details
+              td.text-center
+                a.btn.btn-danger.btn-sm(onclick=`deleteButtonClicked(${user.customer_id},this)`) Verwijderen
+
+

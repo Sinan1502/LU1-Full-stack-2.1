@@ -8,10 +8,7 @@ var cors = require('cors');
 
 var indexRouter = require('./src/routes/index.route');
 var usersRouter = require('./src/routes/users.route');
-var registerRouter = require('./src/routes/register.route');
 var authRouter = require('./src/routes/auth.route');
-var refreshRouter = require('./src/routes/refresh.route');
-var logoutRouter = require('./src/routes/logout.route');
 var dashboardRouter = require('./src/routes/dashboard.route');
 
 
@@ -33,10 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 
 app.use('/', indexRouter);
-app.use('/register', registerRouter);
 app.use('/auth', authRouter);
-app.use('/refresh', refreshRouter);
-app.use('/logout', logoutRouter);
 app.use('/dashboard', dashboardRouter);
 app.use('/users', usersRouter);
 

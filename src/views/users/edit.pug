@@ -1,46 +1,23 @@
 extend ../layout
 
 block content
-    form(method='POST' action='/users/' + users.customer_id + '/edit')
-        div.mb-3
-            label(for="firstName" class="form-label") First Name
-            input(
-                type="text" 
-                name = 'firstName' 
-                class="form-control" 
-                value=users.first_name 
-                id="firstName" 
-                required
-            )
-            label(for="lastName" class="form-label") Last Name
-            input(
-                type="text" 
-                name = 'lastName' 
-                class="form-control" 
-                value=users.last_name
-                id="lastName" 
-                required
-            )
-            label(for="active" class="form-label") Active
-            input(
-                type="number" 
-                name = 'active' 
-                class="form-control" 
-                value=users.active 
-                id="active" 
-                required
-                )
-            label(for="exampleInputEmail1" class="form-label") Email address
-            input(
-                type="email" 
-                name = 'email' 
-                class="form-control" 
-                value=users.email 
-                id="exampleInputEmail1" 
-                aria-describedby="emailHelp" 
-                required
-                )
-            div(id="emailHelp" class="form-text") We'll never share your email with anyone else.
-        div(class='row')
-            button.btn.btn-primary.me-2(type='submit') Submit
-            button.btn.btn-warning.ml-2(type='button' onclick='window.location.href="/users/' + users.customer_id + '/details"') Cancel
+  .d-flex.justify-content-center.align-items-center.min-vh-100
+    .card.shadow.p-4(style="width: 400px;")
+      h3.text-center.mb-4 Klantgegevens bewerken
+      form(method='POST' action='/users/' + users.customer_id + '/edit')
+        .mb-3
+          label(for="firstName" class="form-label") Voornaam
+          input.form-control(type="text", name='firstName', value=users.first_name, id="firstName", required)
+        .mb-3
+          label(for="lastName" class="form-label") Achternaam
+          input.form-control(type="text", name='lastName', value=users.last_name, id="lastName", required)
+        .mb-3
+          label(for="active" class="form-label") Actief
+          input.form-control(type="number", name='active', value=users.active, id="active", required)
+        .mb-3
+          label(for="exampleInputEmail1" class="form-label") E-mailadres
+          input.form-control(type="email", name='email', value=users.email, id="exampleInputEmail1", aria-describedby="emailHelp", required)
+          div#emailHelp.form-text We delen je e-mailadres nooit met anderen.
+        .d-flex.justify-content-between.mt-4
+          button.btn.btn-primary(type='submit') Opslaan
+          button.btn.btn-secondary(type='button', onclick='window.location.href="/users/' + users.customer_id + '/details"') Annuleren
