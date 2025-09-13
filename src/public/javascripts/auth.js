@@ -65,6 +65,7 @@ if (usernameSpan) {
     usernameSpan.textContent = payload.username;
   }
 }
+//uitloggen
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {

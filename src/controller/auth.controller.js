@@ -9,7 +9,7 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 require('dotenv').config();
 
-// ✅ Registreren
+// Registreren
 const handleRegister = async (req, res) => {
   const { user, pwd } = req.body;
   if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
@@ -35,7 +35,7 @@ const handleRegister = async (req, res) => {
   }
 };
 
-// ✅ Inloggen
+//Inloggen
 const handleLogin = async (req, res) => {
   const { user, pwd } = req.body;
   if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
@@ -77,7 +77,7 @@ const handleLogin = async (req, res) => {
   res.json({ accessToken });
 };
 
-// ✅ Refresh token
+//Refresh token
 const handleRefreshToken = (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(401);
@@ -98,7 +98,7 @@ const handleRefreshToken = (req, res) => {
   });
 };
 
-// ✅ Uitloggen
+//Uitloggen
 const handleLogout = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(204);
