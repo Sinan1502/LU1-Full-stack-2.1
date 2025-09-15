@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'src', 'public')));
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/dashboard', dashboardRouter);
-app.use('/users', verifyJWT, usersRouter);
+app.use('/users', usersRouter);
 app.use('/over-ons', aboutRouter);
 
 // catch 404 and forward to error handler

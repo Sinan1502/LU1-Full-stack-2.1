@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
+const verifyJWT = require('../middleware/verifyJWT');
 const usersController=require('../controller/users.controller');
+
+router.use(verifyJWT);
 
 /* GET users listing. */
 router.get('/', usersController.get);

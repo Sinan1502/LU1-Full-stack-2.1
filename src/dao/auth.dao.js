@@ -1,4 +1,4 @@
-const database = require('../db/connection');
+const database = require('../db/connection').promise;
 
 const authDao = {
   findByUsername: async (username) => {
@@ -26,7 +26,7 @@ const authDao = {
       values.push(updatedFields[key]);
     }
 
-    values.push(username); // WHERE username = ?
+    values.push(username); 
 
     const query = `UPDATE users SET ${fields.join(', ')} WHERE username = ?`;
     await database.query(query, values);
