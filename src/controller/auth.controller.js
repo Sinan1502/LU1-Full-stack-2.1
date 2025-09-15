@@ -103,7 +103,6 @@ const handleRefreshToken = (req, res) => {
       { expiresIn: '15m' }
     );
 
-    // Nieuwe accessToken cookie
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       sameSite: 'Lax',
