@@ -1,13 +1,8 @@
 const API_BASE = "http://localhost:3000";
 
-console.log("auth.js geladen");
-
-
-
 // Login
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
-  console.log("loginForm gevonden");
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const user = document.getElementById("user").value;
@@ -21,8 +16,6 @@ if (loginForm) {
     });
 
     if (res.ok) {
-      const data = await res.json();
-      localStorage.setItem("accessToken", data.accessToken);
       window.location.href = "/dashboard";
     } else {
       alert("Login mislukt!");
@@ -55,17 +48,7 @@ if (registerForm) {
   });
 }
 
-const usernameSpan = document.getElementById("username");
-if (usernameSpan) {
-  const token = localStorage.getItem("accessToken");
-  if (!token) {
-    window.location.href = "/";
-  } else {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    usernameSpan.textContent = payload.username;
-  }
-}
-//uitloggen
+// Logout
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
@@ -77,11 +60,6 @@ if (logoutBtn) {
     } catch (err) {
       console.error("Logout fout:", err);
     }
-    localStorage.removeItem("accessToken");
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 100);
+    setTimeout(() => { window.location.href = "/"; }, 100);
   });
 }
-
-

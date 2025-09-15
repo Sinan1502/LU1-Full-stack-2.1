@@ -1,6 +1,6 @@
 const UsersDB = {
   users: require('../model/users.json'),
-  setUsers: function (data) { this.users = data }
+  setUsers: function (data) { this.users = data; }
 };
 
 const bcrypt = require('bcrypt');
@@ -12,10 +12,10 @@ require('dotenv').config();
 // Registreren
 const handleRegister = async (req, res) => {
   const { user, pwd } = req.body;
-  if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
+  if (!user || !pwd) return res.status(400).json({ message: 'Username and password are required.' });
 
   const duplicate = UsersDB.users.find(person => person.username === user);
-  if (duplicate) return res.sendStatus(409); // Conflict
+  if (duplicate) return res.sendStatus(409);
 
   try {
     const hashedPwd = await bcrypt.hash(pwd, 10);
@@ -27,18 +27,17 @@ const handleRegister = async (req, res) => {
       JSON.stringify(UsersDB.users)
     );
 
-    console.log(UsersDB.users);
-    res.status(201).json({ 'success': `New user ${user} created!` });
+    res.status(201).json({ success: `New user ${user} created!` });
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
   }
 };
 
-//Inloggen
+// Inloggen
 const handleLogin = async (req, res) => {
   const { user, pwd } = req.body;
-  if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
+  if (!user || !pwd) return res.status(400).json({ message: 'Username and password are required.' });
 
   const foundUser = UsersDB.users.find(person => person.username === user);
   if (!foundUser) return res.sendStatus(401);
@@ -46,6 +45,7 @@ const handleLogin = async (req, res) => {
   const match = await bcrypt.compare(pwd, foundUser.password);
   if (!match) return res.sendStatus(401);
 
+  // Genereer tokens
   const accessToken = jwt.sign(
     { username: foundUser.username },
     process.env.ACCESS_TOKEN_SECRET,
@@ -58,6 +58,7 @@ const handleLogin = async (req, res) => {
     { expiresIn: '1d' }
   );
 
+  // Update refreshToken
   const otherUsers = UsersDB.users.filter(person => person.username !== foundUser.username);
   const currentUser = { ...foundUser, refreshToken };
   UsersDB.setUsers([...otherUsers, currentUser]);
@@ -66,23 +67,30 @@ const handleLogin = async (req, res) => {
     path.join(__dirname, '..', 'model', 'users.json'),
     JSON.stringify(UsersDB.users)
   );
+  // Stuur cookies
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    sameSite: 'Lax',
+    secure: false, 
+    maxAge: 15 * 60 * 1000
+  });
 
-  res.cookie('jwt', refreshToken, {
+  res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     sameSite: 'Lax',
     secure: false,
     maxAge: 24 * 60 * 60 * 1000
   });
 
-  res.json({ accessToken });
+  res.json({ success: true });
 };
 
-//Refresh token
+// Refresh token
 const handleRefreshToken = (req, res) => {
   const cookies = req.cookies;
-  if (!cookies?.jwt) return res.sendStatus(401);
+  if (!cookies?.refreshToken) return res.sendStatus(401);
 
-  const refreshToken = cookies.jwt;
+  const refreshToken = cookies.refreshToken;
   const foundUser = UsersDB.users.find(person => person.refreshToken === refreshToken);
   if (!foundUser) return res.sendStatus(403);
 
@@ -94,33 +102,41 @@ const handleRefreshToken = (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: '15m' }
     );
-    res.json({ accessToken });
+
+    // Nieuwe accessToken cookie
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      sameSite: 'Lax',
+      secure: false,
+      maxAge: 15 * 60 * 1000
+    });
+
+    res.json({ success: true });
   });
 };
 
-//Uitloggen
+// Uitloggen
 const handleLogout = async (req, res) => {
   const cookies = req.cookies;
-  if (!cookies?.jwt) return res.sendStatus(204);
+  if (!cookies?.refreshToken) return res.sendStatus(204);
 
-  const refreshToken = cookies.jwt;
+  const refreshToken = cookies.refreshToken;
   const foundUser = UsersDB.users.find(person => person.refreshToken === refreshToken);
 
-  if (!foundUser) {
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'Lax', secure: false });
-    return res.sendStatus(204);
+  if (foundUser) {
+    const otherUsers = UsersDB.users.filter(person => person.refreshToken !== refreshToken);
+    const currentUser = { ...foundUser, refreshToken: '' };
+    UsersDB.setUsers([...otherUsers, currentUser]);
+
+    await fsPromises.writeFile(
+      path.join(__dirname, '..', 'model', 'users.json'),
+      JSON.stringify(UsersDB.users)
+    );
   }
 
-  const otherUsers = UsersDB.users.filter(person => person.refreshToken !== foundUser.refreshToken);
-  const currentUser = { ...foundUser, refreshToken: '' };
-  UsersDB.setUsers([...otherUsers, currentUser]);
-
-  await fsPromises.writeFile(
-    path.join(__dirname, '..', 'model', 'users.json'),
-    JSON.stringify(UsersDB.users)
-  );
-
-  res.clearCookie('jwt', { httpOnly: true, sameSite: 'Lax', secure: false });
+  // Clear cookies
+  res.clearCookie('accessToken', { httpOnly: true, sameSite: 'Lax', secure: false });
+  res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'Lax', secure: false });
   res.sendStatus(204);
 };
 
