@@ -9,6 +9,7 @@ var cors = require('cors');
 var indexRouter = require('./src/routes/index.route');
 var usersRouter = require('./src/routes/users.route');
 var authRouter = require('./src/routes/auth.route');
+var aboutRouter = require('./src/routes/about.route');
 var dashboardRouter = require('./src/routes/dashboard.route');
 
 
@@ -33,6 +34,8 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/dashboard', dashboardRouter);
 app.use('/users', verifyJWT, usersRouter);
+app.use('/over-ons', aboutRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
