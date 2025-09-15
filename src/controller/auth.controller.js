@@ -1,142 +1,59 @@
-const UsersDB = {
-  users: require('../model/users.json'),
-  setUsers: function (data) { this.users = data; }
-};
+const authService = require('../service/auth.service');
 
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const fsPromises = require('fs').promises;
-const path = require('path');
-require('dotenv').config();
-
-// Registreren
 const handleRegister = async (req, res) => {
-  const { user, pwd } = req.body;
-  if (!user || !pwd) return res.status(400).json({ message: 'Username and password are required.' });
-
-  const duplicate = UsersDB.users.find(person => person.username === user);
-  if (duplicate) return res.sendStatus(409);
-
   try {
-    const hashedPwd = await bcrypt.hash(pwd, 10);
-    const newUser = { username: user, password: hashedPwd };
-    UsersDB.setUsers([...UsersDB.users, newUser]);
+    const { user, pwd } = req.body;
+    if (!user || !pwd) return res.status(400).json({ message: 'Username and password required' });
 
-    await fsPromises.writeFile(
-      path.join(__dirname, '..', 'model', 'users.json'),
-      JSON.stringify(UsersDB.users)
-    );
-
-    res.status(201).json({ success: `New user ${user} created!` });
+    await authService.register(user, pwd);
+    res.status(201).json({ success: `User ${user} created!` });
   } catch (err) {
+    if (err.message.includes('exists')) return res.status(409).json({ message: err.message });
     console.error(err);
     res.sendStatus(500);
   }
 };
 
-// Inloggen
 const handleLogin = async (req, res) => {
-  const { user, pwd } = req.body;
-  if (!user || !pwd) return res.status(400).json({ message: 'Username and password are required.' });
+  try {
+    const { user, pwd } = req.body;
+    if (!user || !pwd) return res.status(400).json({ message: 'Username and password required' });
 
-  const foundUser = UsersDB.users.find(person => person.username === user);
-  if (!foundUser) return res.sendStatus(401);
+    const { accessToken, refreshToken } = await authService.login(user, pwd);
 
-  const match = await bcrypt.compare(pwd, foundUser.password);
-  if (!match) return res.sendStatus(401);
-
-  // Genereer tokens
-  const accessToken = jwt.sign(
-    { username: foundUser.username },
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '15m' }
-  );
-
-  const refreshToken = jwt.sign(
-    { username: foundUser.username },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '1d' }
-  );
-
-  // Update refreshToken
-  const otherUsers = UsersDB.users.filter(person => person.username !== foundUser.username);
-  const currentUser = { ...foundUser, refreshToken };
-  UsersDB.setUsers([...otherUsers, currentUser]);
-
-  await fsPromises.writeFile(
-    path.join(__dirname, '..', 'model', 'users.json'),
-    JSON.stringify(UsersDB.users)
-  );
-  // Stuur cookies
-  res.cookie('accessToken', accessToken, {
-    httpOnly: true,
-    sameSite: 'Lax',
-    secure: false, 
-    maxAge: 15 * 60 * 1000
-  });
-
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    sameSite: 'Lax',
-    secure: false,
-    maxAge: 24 * 60 * 60 * 1000
-  });
-
-  res.json({ success: true });
-};
-
-// Refresh token
-const handleRefreshToken = (req, res) => {
-  const cookies = req.cookies;
-  if (!cookies?.refreshToken) return res.sendStatus(401);
-
-  const refreshToken = cookies.refreshToken;
-  const foundUser = UsersDB.users.find(person => person.refreshToken === refreshToken);
-  if (!foundUser) return res.sendStatus(403);
-
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    if (err || foundUser.username !== decoded.username) return res.sendStatus(403);
-
-    const accessToken = jwt.sign(
-      { username: decoded.username },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '15m' }
-    );
-
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      sameSite: 'Lax',
-      secure: false,
-      maxAge: 15 * 60 * 1000
-    });
+    res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: 'Lax', maxAge: 15*60*1000 });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'Lax', maxAge: 24*60*60*1000 });
 
     res.json({ success: true });
-  });
+  } catch (err) {
+    res.status(401).json({ message: err.message });
+  }
 };
 
-// Uitloggen
-const handleLogout = async (req, res) => {
-  const cookies = req.cookies;
-  if (!cookies?.refreshToken) return res.sendStatus(204);
+const handleRefreshToken = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) return res.sendStatus(401);
 
-  const refreshToken = cookies.refreshToken;
-  const foundUser = UsersDB.users.find(person => person.refreshToken === refreshToken);
-
-  if (foundUser) {
-    const otherUsers = UsersDB.users.filter(person => person.refreshToken !== refreshToken);
-    const currentUser = { ...foundUser, refreshToken: '' };
-    UsersDB.setUsers([...otherUsers, currentUser]);
-
-    await fsPromises.writeFile(
-      path.join(__dirname, '..', 'model', 'users.json'),
-      JSON.stringify(UsersDB.users)
-    );
+    const accessToken = await authService.refreshAccessToken(token);
+    res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: 'Lax', maxAge: 15*60*1000 });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(403).json({ message: err.message });
   }
+};
 
-  // Clear cookies
-  res.clearCookie('accessToken', { httpOnly: true, sameSite: 'Lax', secure: false });
-  res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'Lax', secure: false });
-  res.sendStatus(204);
+const handleLogout = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (token) await authService.logout(token);
+
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.sendStatus(204);
+  } catch (err) {
+    res.sendStatus(500);
+  }
 };
 
 module.exports = {
