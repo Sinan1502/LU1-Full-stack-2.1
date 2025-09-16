@@ -31,13 +31,29 @@ const usersDao = {
 
   delete: (userId, callback) => {
     database.query(
-      'DELETE FROM ?? WHERE ?? = ?',
-      ['customer', 'customer_id', userId],
+      'DELETE FROM payment WHERE customer_id = ?',
+      [userId],
       (error, results) => {
         if (error) return callback(error, undefined);
-        if (results) return callback(undefined, results);
+
+        database.query(
+          'DELETE FROM rental WHERE customer_id = ?',
+          [userId],
+          (error, results) => {
+            if (error) return callback(error, undefined);
+
+            database.query(
+              'DELETE FROM customer WHERE customer_id = ?',
+              [userId],
+              (error, results) => {
+                if (error) return callback(error, undefined);
+                if (results) return callback(undefined, results);
+              }
+            );
+          }
+        );
       }
-    )
+    );
   },
 };
 
