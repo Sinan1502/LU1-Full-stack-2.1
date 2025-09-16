@@ -1,23 +1,31 @@
-const database = require('../db/connection').promise;
+const database = require('../db/connection').pool;
 
 const authDao = {
-  findByUsername: async (username) => {
-    const [rows] = await database.query(
+  get: (username, callback) => {
+    database.query(
       'SELECT id, username, password, refresh_token FROM users WHERE username = ?',
-      [username]
+      [username],
+      (error, results) => {
+        if (error) return callback(error, undefined);
+        if (results && results.length > 0) return callback(undefined, results[0]);
+        return callback(undefined, null);
+      }
     );
-    return rows[0] || null;
   },
 
-  addUser: async (userObj) => {
+  add: (userObj, callback) => {
     const { username, password } = userObj;
-    await database.query(
+    database.query(
       'INSERT INTO users (username, password) VALUES (?, ?)',
-      [username, password]
+      [username, password],
+      (error, results) => {
+        if (error) return callback(error, undefined);
+        return callback(undefined, results);
+      }
     );
   },
 
-  updateUser: async (username, updatedFields) => {
+  update: (username, updatedFields, callback) => {
     const fields = [];
     const values = [];
 
@@ -25,18 +33,23 @@ const authDao = {
       fields.push(`${key} = ?`);
       values.push(updatedFields[key]);
     }
-
-    values.push(username); 
+    values.push(username);
 
     const query = `UPDATE users SET ${fields.join(', ')} WHERE username = ?`;
-    await database.query(query, values);
+    database.query(query, values, (error, results) => {
+      if (error) return callback(error, undefined);
+      return callback(undefined, results);
+    });
   },
 
-  getAll: async () => {
-    const [rows] = await database.query(
-      'SELECT id, username, password, refresh_token FROM users'
+  getAll: (callback) => {
+    database.query(
+      'SELECT id, username, password, refresh_token FROM users',
+      (error, results) => {
+        if (error) return callback(error, undefined);
+        return callback(undefined, results);
+      }
     );
-    return rows;
   }
 };
 

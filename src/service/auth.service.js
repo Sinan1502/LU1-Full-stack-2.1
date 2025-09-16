@@ -4,63 +4,86 @@ const authDao = require('../dao/auth.dao');
 require('dotenv').config();
 
 const authService = {
-  register: async (username, password) => {
-    const existing = await authDao.findByUsername(username);
-    if (existing) throw new Error('Username already exists');
+  register: (username, password, callback) => {
+    authDao.get(username, (err, existing) => {
+      if (err) return callback(err);
+      if (existing) return callback(new Error('Username already exists'));
 
-    const hashedPwd = await bcrypt.hash(password, 10);
-    const newUser = { username, password: hashedPwd };
-    await authDao.addUser(newUser);
-    return newUser;
+      bcrypt.hash(password, 10, (err, hashedPwd) => {
+        if (err) return callback(err);
+        const newUser = { username, password: hashedPwd };
+        authDao.add(newUser, (err, result) => {
+          if (err) return callback(err);
+          callback(undefined, newUser);
+        });
+      });
+    });
   },
 
-  login: async (username, password) => {
-    const user = await authDao.findByUsername(username);
-    if (!user) throw new Error('Invalid credentials');
+  login: (username, password, callback) => {
+    authDao.get(username, (err, user) => {
+      if (err) return callback(err);
+      if (!user) return callback(new Error('Invalid credentials'));
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new Error('Invalid credentials');
+      bcrypt.compare(password, user.password, (err, match) => {
+        if (err) return callback(err);
+        if (!match) return callback(new Error('Invalid credentials'));
 
-    const accessToken = jwt.sign(
-      { username: user.username },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '15m' }
-    );
+        const accessToken = jwt.sign(
+          { username: user.username },
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: '15m' }
+        );
 
-    const refreshToken = jwt.sign(
-      { username: user.username },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: '1d' }
-    );
+        const refreshToken = jwt.sign(
+          { username: user.username },
+          process.env.REFRESH_TOKEN_SECRET,
+          { expiresIn: '1d' }
+        );
 
-    await authDao.updateUser(user.username, { refresh_token: refreshToken });
-
-    return { accessToken, refreshToken };
+        authDao.update(user.username, { refresh_token: refreshToken }, (err) => {
+          if (err) return callback(err);
+          callback(undefined, { accessToken, refreshToken });
+        });
+      });
+    });
   },
 
-  refreshAccessToken: async (refreshToken) => {
-    const users = await authDao.getAll();
-    const user = users.find(u => u.refresh_token === refreshToken);
-    if (!user) throw new Error('Invalid refresh token');
+  refreshAccessToken: (refreshToken, callback) => {
+    authDao.getAll((err, users) => {
+      if (err) return callback(err);
+      const user = users.find(u => u.refresh_token === refreshToken);
+      if (!user) return callback(new Error('Invalid refresh token'));
 
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    if (decoded.username !== user.username) throw new Error('Token mismatch');
+      let decoded;
+      try {
+        decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      } catch (err) {
+        return callback(err);
+      }
+      if (decoded.username !== user.username) return callback(new Error('Token mismatch'));
 
-    const accessToken = jwt.sign(
-      { username: user.username },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '15m' }
-    );
+      const accessToken = jwt.sign(
+        { username: user.username },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '15m' }
+      );
 
-    return accessToken;
+      callback(undefined, accessToken);
+    });
   },
 
-  logout: async (refreshToken) => {
-    const users = await authDao.getAll();
-    const user = users.find(u => u.refresh_token === refreshToken);
-    if (!user) return;
+  logout: (refreshToken, callback) => {
+    authDao.getAll((err, users) => {
+      if (err) return callback(err);
+      const user = users.find(u => u.refresh_token === refreshToken);
+      if (!user) return callback(); // nothing to do
 
-    await authDao.updateUser(user.username, { refresh_token: null });
+      authDao.update(user.username, { refresh_token: null }, (err) => {
+        if (err) return callback(err);
+        callback();
+      });
+    });
   }
 };
 
