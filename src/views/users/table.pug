@@ -1,6 +1,13 @@
 extends ../layout
 
 block content
+  nav.navbar.navbar-light.bg-light.mb-4
+    .container-fluid
+      span.navbar-brand.mb-0.h1 Avans Klantenbeheer
+      .d-flex
+        a.btn.btn-secondary.me-2(href='/dashboard') Home
+        button.btn.btn-danger#logoutBtn(type='button') Logout
+
   .d-flex.justify-content-center.align-items-center.min-vh-100
     .card.shadow.p-4(style="width: 900px;")
       h3.text-center.mb-4 Klantenoverzicht

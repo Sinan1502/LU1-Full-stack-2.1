@@ -1,6 +1,10 @@
 extends layout
 
 block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    a.btn.btn-secondary(href='/dashboard') Home
+    button.btn.btn-danger#logoutBtn(type='button') Logout
+
   .d-flex.justify-content-center.align-items-center.min-vh-100
     .card.shadow.p-4(style="width: 600px;")
       h1.text-center.mb-3 Over Ons
