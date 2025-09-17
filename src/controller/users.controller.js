@@ -39,7 +39,7 @@ const usersController = {
         }
       })
       : usersService.update(email, userId, firstName, lastName, active, (error, result) => {
-      //: logger.debug(req.body);
+
         if (error) next(error);
         if (result) res.redirect(301,`/users/${userId}/details`);
         

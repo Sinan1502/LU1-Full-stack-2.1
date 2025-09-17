@@ -32,7 +32,7 @@ const authService = {
         const accessToken = jwt.sign(
           { username: user.username },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '15m' }
+          { expiresIn: '30m' }
         );
 
         const refreshToken = jwt.sign(
@@ -66,7 +66,7 @@ const authService = {
       const accessToken = jwt.sign(
         { username: user.username },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' }
+        { expiresIn: '30m' }
       );
 
       callback(undefined, accessToken);
@@ -77,7 +77,7 @@ const authService = {
     authDao.getAll((err, users) => {
       if (err) return callback(err);
       const user = users.find(u => u.refresh_token === refreshToken);
-      if (!user) return callback(); // nothing to do
+      if (!user) return callback(); 
 
       authDao.update(user.username, { refresh_token: null }, (err) => {
         if (err) return callback(err);

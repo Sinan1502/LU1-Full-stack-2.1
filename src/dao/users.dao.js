@@ -1,4 +1,4 @@
-const database = require('../db/connection').pool;
+const database = require('../db/connection');
 const logger = require('../util/logger');
 
 const usersDao = {

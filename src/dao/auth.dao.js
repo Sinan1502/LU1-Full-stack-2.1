@@ -1,4 +1,4 @@
-const database = require('../db/connection').pool;
+const database = require('../db/connection');
 
 const authDao = {
   get: (username, callback) => {
