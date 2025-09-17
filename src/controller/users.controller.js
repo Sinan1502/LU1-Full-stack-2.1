@@ -3,16 +3,26 @@ const logger = require('../util/logger');
 
 const usersController = {
 
-  validate (req, res, next) {
+  validate(req, res, next) {
     let userId = req.params.userId;
     logger.debug(req.body);
     let { email, firstName, lastName, active } = req.body;
     active = parseInt(active);
     usersService.validate(email, firstName, lastName, active, (error) => {
-      if (error) next (error);
+      if (error) next(error);
       next()
     });
   },
+
+  create: (req, res, next) => {
+    let { firstName, lastName, email, active } = req.body;
+    active = parseInt(active);
+    usersService.create(firstName, lastName, email, active, (error, result) => {
+      if (error) return next(error);
+      res.redirect('/users');
+    });
+  },
+
 
 
   get: (req, res, next) => {
@@ -21,8 +31,8 @@ const usersController = {
       if (error) next(error);
       if (users) {
         userId == undefined
-        ? res.render('users/table', { users: users })
-        : res.render('users/details', { users: users[0]});
+          ? res.render('users/table', { users: users })
+          : res.render('users/details', { users: users[0] });
       }
     });
   },
@@ -41,8 +51,8 @@ const usersController = {
       : usersService.update(email, userId, firstName, lastName, active, (error, result) => {
 
         if (error) next(error);
-        if (result) res.redirect(301,`/users/${userId}/details`);
-        
+        if (result) res.redirect(301, `/users/${userId}/details`);
+
       });
   },
   delete: (req, res, next) => {

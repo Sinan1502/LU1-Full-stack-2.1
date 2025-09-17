@@ -4,9 +4,10 @@ block content
   nav.navbar.navbar-light.bg-light.mb-4
     .container-fluid
       span.navbar-brand.mb-0.h1 Avans Klantenbeheer
-      .d-flex
+      .d-flex.align-items-center
         a.btn.btn-secondary.me-2(href='/dashboard') Home
-        button.btn.btn-danger#logoutBtn(type='button') Logout
+        a.btn.btn-primary.btn-sm.me-2(href='/users/new') Klant toevoegen
+        button.btn.btn-danger#logoutBtn(type='button') Log uit
 
   .d-flex.justify-content-center.align-items-center.min-vh-100
     .card.shadow.p-4(style="width: 900px;")

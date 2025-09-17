@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+  .container.mt-4
+    h3.text-center.mb-4 Nieuwe Klant Toevoegen
+    form(action='/users/new', method='POST')
+      .mb-3
+        label.form-label(for='firstName') First Name
+        input.form-control(type='text', name='firstName', required)
+      .mb-3
+        label.form-label(for='lastName') Last Name
+        input.form-control(type='text', name='lastName', required)
+      .mb-3
+        label.form-label(for='email') Email
+        input.form-control(type='email', name='email', required)
+      .mb-3
+        label.form-label(for='active') Active
+        select.form-select(name='active')
+          option(value='1') Actief
+          option(value='0') Inactief
+      .d-flex.justify-content-center
+        button.btn.btn-success(type='submit') Klant toevoegen
+        a.btn.btn-secondary.ms-2(href='/users') Annuleren

@@ -6,7 +6,7 @@ const usersDao = {
     let query, params;
 
     if (userId == undefined) {
-      query = 'SELECT * FROM ?? LIMIT 15';
+      query = 'SELECT * FROM ?? ORDER BY customer_id DESC LIMIT 15';
       params = ['customer'];
     } else {
       query = 'SELECT * FROM ?? WHERE ??= ?';
@@ -17,6 +17,18 @@ const usersDao = {
       if (results) return callback(undefined, results);
     });
   },
+
+  create: (firstName, lastName, email, active, callback) => {
+    const query = 'INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?, ?)';
+    const params = ['customer', 'first_name', 'last_name', 'email', 'active', 'store_id', 'address_id',
+      firstName, lastName, email, active, 1, 1];
+
+    database.query(query, params, (error, result) => {
+      if (error) return callback(error, undefined);
+      callback(undefined, result);
+    });
+  },
+
 
   update: (email, userId, firstName, lastName, active, callback) => {
     database.query(
