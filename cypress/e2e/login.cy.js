@@ -11,7 +11,7 @@ describe('Login pagina', () => {
   })
 
   it('Gebruiker kan velden invullen en submitten', () => {
-    cy.get('#user').type('Sinan')
+    cy.get('#user').type('Sinan1')
     cy.get('#pwd').type('Sagir')
     cy.get('#loginForm').submit()
     cy.url().should('include', '/dashboard')
