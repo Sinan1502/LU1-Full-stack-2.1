@@ -1,5 +1,5 @@
 function deleteFetch(userId, callback) {
-  fetch(`${userId}`, { method: 'DELETE' })
+  fetch(`/users/${userId}`, { method: 'DELETE' })
     //.then((res) => res.json())
     .then((data) => {
       callback(undefined, data);

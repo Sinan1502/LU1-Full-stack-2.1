@@ -1,23 +1,25 @@
 extends ../layout
 
 block content
-  .container.mt-4
-    h3.text-center.mb-4 Nieuwe Klant Toevoegen
-    form(action='/users/new', method='POST')
-      .mb-3
-        label.form-label(for='firstName') First Name
-        input.form-control(type='text', name='firstName', required)
-      .mb-3
-        label.form-label(for='lastName') Last Name
-        input.form-control(type='text', name='lastName', required)
-      .mb-3
-        label.form-label(for='email') Email
-        input.form-control(type='email', name='email', required)
-      .mb-3
-        label.form-label(for='active') Active
-        select.form-select(name='active')
-          option(value='1') Actief
-          option(value='0') Inactief
-      .d-flex.justify-content-center
-        button.btn.btn-success(type='submit') Klant toevoegen
-        a.btn.btn-secondary.ms-2(href='/users') Annuleren
+  .d-flex.justify-content-center.align-items-center.min-vh-100
+    .card.shadow.p-4(style="width: 400px;")
+      h3.text-center.mb-4 Nieuwe Klant Toevoegen
+      form(action='/users/new', method='POST')
+        .mb-3
+          label(for="firstName" class="form-label") Voornaam
+          input.form-control(type='text', name='firstName', id='firstName', required)
+        .mb-3
+          label(for="lastName" class="form-label") Achternaam
+          input.form-control(type='text', name='lastName', id='lastName', required)
+        .mb-3
+          label(for="email" class="form-label") E-mailadres
+          input.form-control(type='email', name='email', id='email', required)
+          div#emailHelp.form-text We delen je e-mailadres nooit met anderen.
+        .mb-3
+          label(for="active" class="form-label") Actief
+          select.form-select(name='active', id='active')
+            option(value='1') Actief
+            option(value='0') Inactief
+        .d-flex.justify-content-between.mt-4
+          button.btn.btn-success(type='submit') Klant toevoegen
+          a.btn.btn-secondary(href='/users') Annuleren
