@@ -6,12 +6,95 @@ block content
     button.btn.btn-danger#logoutBtn(type='button') Logout
 
   .d-flex.justify-content-center.align-items-center.min-vh-100
-    .card.shadow.p-4(style="width: 600px;")
+    .card.shadow.p-4(style="width: 800px;")
       h1.text-center.mb-3 Over Ons
       p.text-center.mb-4 Hier vind je onze user stories en achtergrondinformatie over het project.
+
+      //- User Stories Section
       h2.mb-3 User Stories
-      ul.list-group.list-group-flush
-        li.list-group-item Als beheerder wil ik kunnen registreren zodat ik een account heb.
-        li.list-group-item Als beheerder wil ik kunnen inloggen zodat ik mijn data veilig kan bekijken.
-        li.list-group-item Als beheerder wil ik gebruikers kunnen bekijken zodat ik overzicht heb.
+
+      //- 1. Accountregistratie
+      h4.mb-2 1. Accountregistratie
+      p.mb-1 
+        strong User Story: 
+        | Als nieuwe gebruiker wil ik een account kunnen registreren met een gebruikersnaam en wachtwoord zodat ik toegang krijg tot de applicatie.
+      p.mb-1 
+        strong Acceptatiecriteria:
+      ul
+        li Een gebruiker kan een account aanmaken via het registratieformulier.
+        li Het systeem geeft een foutmelding als de gebruikersnaam al bestaat.
+        li Het systeem geeft een foutmelding als verplichte velden leeg zijn.
+        li Na succesvolle registratie wordt de gebruiker doorgestuurd naar de loginpagina.
+
+      //- 2. Inloggen
+      h4.mb-2 2. Inloggen
+      p.mb-1
+        strong User Story: 
+        | Als gebruiker wil ik kunnen inloggen met mijn gebruikersnaam en wachtwoord zodat ik toegang krijg tot het dashboard.
+      p.mb-1
+        strong Acceptatiecriteria:
+      ul
+        li Gebruikers kunnen inloggen met correcte inloggegevens.
+        li Bij onjuiste gebruikersnaam/wachtwoord verschijnt een foutmelding.
+        li Na succesvol inloggen wordt de gebruiker doorgestuurd naar het dashboard.
+
+      //- 3. Dashboard toegang
+      h4.mb-2 3. Dashboard toegang
+      p.mb-1
+        strong User Story: 
+        | Als ingelogde gebruiker wil ik het dashboard kunnen bekijken zodat ik een overzicht heb van mijn opties en acties.
+      p.mb-1
+        strong Acceptatiecriteria:
+      ul
+        li Alleen ingelogde gebruikers kunnen het dashboard openen.
+        li Het dashboard toont links naar klantenpagina en over ons-pagina.
+        li De uitlogknop is zichtbaar op het dashboard.
+
+      //- 4. Klanten beheren (CRUD)
+      h4.mb-2 4. Klanten beheren (CRUD)
+      p.mb-1
+        strong User Story: 
+        | Als medewerker of super administrator wil ik klantgegevens kunnen bekijken, toevoegen, aanpassen en verwijderen zodat ik het klantenbestand kan beheren.
+      p.mb-1
+        strong Acceptatiecriteria:
+      ul
+        li Gebruikers kunnen alle klanten zien op de klantenpagina.
+        li Gebruikers kunnen een nieuwe klant toevoegen via een formulier.
+        li Gebruikers kunnen bestaande klantgegevens aanpassen en opslaan.
+        li Gebruikers kunnen een klant verwijderen.
+        li Bij foutieve invoer (bijv. leeg veld) verschijnt een duidelijke foutmelding.
+
+      //- 5. Uitloggen
+      h4.mb-2 5. Uitloggen
+      p.mb-1
+        strong User Story: 
+        | Als ingelogde gebruiker wil ik op elke pagina kunnen uitloggen zodat mijn sessie wordt afgesloten.
+      p.mb-1
+        strong Acceptatiecriteria:
+      ul
+        li Uitloggen kan vanaf elke pagina via een uitlogknop.
+        li Bij uitloggen wordt de token verwijderd en de gebruiker doorgestuurd naar de loginpagina.
+
+      //- 6. Over ons / User stories pagina
+      h4.mb-2 6. Over ons 
+      p.mb-1
+        strong User Story: 
+        | Als gebruiker wil ik de over ons-pagina kunnen bekijken zodat ik informatie over de applicatie en de user stories kan zien.
+      p.mb-1
+        strong Acceptatiecriteria:
+      ul
+        li De pagina is toegankelijk vanaf het dashboard.
+        li De user stories en acceptatiecriteria worden duidelijk weergegeven.
+        li De uitlogknop blijft beschikbaar.
+            //- 7. Beveiligde toegang tot klantenpagina
+      h4.mb-2 7. Security
+      p.mb-1
+        strong User Story: 
+        | Als niet-ingelogde gebruiker wil ik de klantenpagina niet kunnen bezoeken zodat alleen geautoriseerde gebruikers toegang hebben.
+      p.mb-1
+        strong Acceptatiecriteria:
+      ul
+        li Alleen ingelogde gebruikers met een geldige token kunnen de klantenpagina openen.
+        li Niet-ingelogde gebruikers die proberen de klantenpagina te bezoeken, worden doorgestuurd naar de loginpagina.
+        li Er verschijnt een foutmelding of alert indien toegang wordt geweigerd zonder geldige token.
 
