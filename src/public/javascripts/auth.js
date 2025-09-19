@@ -16,9 +16,21 @@ if (loginForm) {
     });
 
     if (res.ok) {
-      window.location.href = "/dashboard";
+      Swal.fire({
+        icon: "success",
+        title: "Inloggen gelukt!",
+        text: "Welkom terug ",
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        window.location.href = "/dashboard";
+      });
     } else {
-      alert("Login mislukt!");
+      Swal.fire({
+        icon: "error",
+        title: "Inloggen mislukt",
+        text: "Controleer je gebruikersnaam en wachtwoord"
+      });
     }
   });
 }
@@ -38,12 +50,27 @@ if (registerForm) {
     });
 
     if (res.ok) {
-      alert("Registratie succesvol! Je kan nu inloggen.");
-      window.location.href = "/";
+      Swal.fire({
+        icon: "success",
+        title: "Registratie gelukt!",
+        text: "Je kunt nu inloggen.",
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        window.location.href = "/";
+      });
     } else if (res.status === 409) {
-      alert("Gebruikersnaam bestaat al!");
+      Swal.fire({
+        icon: "warning",
+        title: "Gebruikersnaam bestaat al!",
+        text: "Kies een andere naam."
+      });
     } else {
-      alert("Registratie mislukt!");
+      Swal.fire({
+        icon: "error",
+        title: "Registratie mislukt",
+        text: "Probeer het later opnieuw."
+      });
     }
   });
 }
@@ -57,9 +84,23 @@ if (logoutBtn) {
         method: "GET",
         credentials: "include"
       });
+
+      Swal.fire({
+        icon: "success",
+        title: "Je bent uitgelogd",
+        text: "Tot de volgende keer!",
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        window.location.href = "/";
+      });
+
     } catch (err) {
-      console.error("Logout fout:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Fout bij uitloggen",
+        text: "Probeer het later opnieuw."
+      });
     }
-    setTimeout(() => { window.location.href = "/"; }, 100);
   });
 }
