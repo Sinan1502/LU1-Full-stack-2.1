@@ -98,7 +98,7 @@ if (logoutBtn) {
     } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Fout bij uitloggen",
+        title: "Fout bij uitloggen!",
         text: "Probeer het later opnieuw."
       });
     }
