@@ -3,7 +3,7 @@ describe('Klantenbeheer - Authentication & CRUD Tests', () => {
   
   // Test credentials
   const testUser = {
-    username: 'SSSinan',
+    username: 'SSSSinan',
     password: 'testpass12345'
   };
   
